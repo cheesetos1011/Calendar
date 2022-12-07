@@ -27,14 +27,22 @@ public class CalenderStep {
     }
 
     // Create event has schedule is Once/ Weekly/ Monthly
-    @When("Create event {string},{string},{string}")
-    public void createEvent(String title, String type, String scheduleType) {
-        calendarActions.createEvent(title,type,scheduleType);
+    @When("Create event {string},{string},{string},{string}")
+    public void createEvent(String title, String type, String scheduleType, String description) {
+        calendarActions.createEvent(title, type, scheduleType, description);
     }
     @Then("Check response code when create Once, Weekly, Monthly event")
     public void checkResponseCodeWhenCreateEventOnce() {
         restAssuredThat(response -> response.statusCode(201));
     }
+//    @Then("Verify title")
+//    public void checkTitle(String title, String type, String scheduleType){
+//        calendarActions.checkTitle(title,type,scheduleType);
+//    }
+//    @Then("Check start time and end time {string},{string},{string}")
+//    public void checkStartTimeAndEndTime(String title, String type, String scheduleType) {
+//        calendarActions.checkEventHasTime(title, type, scheduleType);
+//    }
 
     // Create event has schedule is Daily
     @When("Create daily event {string},{string},{string}")

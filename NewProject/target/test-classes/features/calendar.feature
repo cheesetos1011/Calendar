@@ -9,19 +9,20 @@ Feature: Check api calendar
       | 1667235600000 | 1669827600000 |
 
   Scenario Outline: Post for event's schedule type is Once or Weekly or Monthly
-    When Create event "<title>","<type>","<scheduleType>"
+    When Create event "<title>","<type>","<scheduleType>","<description>"
     Then Check response code when create Once, Weekly, Monthly event
-    Examples: Set schedule
-      | title              | type     | scheduleType |
-      | Meeting once 1     | Meeting  | Once         |
-      | reminder once 1    | Reminder | Once         |
-      | task one 1         | Task     | Once         |
-      | meeting weekly 1   | Meeting  | Weekly       |
-      | reminder weekly 1  | Reminder | Weekly       |
-      | task weekly 1      | Task     | Weekly       |
-      | meeting monthly 1  | Meeting  | Monthly      |
-      | reminder monthly 1 | Reminder | Monthly      |
-      | task monthly 1     | Task     | Monthly      |
+#    Verify title, start/ end time, description here
+    Examples:
+      | title              | type     | scheduleType |description|
+      | Meeting once 1     | Meeting  | Once         |hihihi     |
+      | reminder once 1    | Reminder | Once         |abcd       |
+      | task one 1         | Task     | Once         |123        |
+      | meeting weekly 1   | Meeting  | Weekly       |""         |
+      | reminder weekly 1  | Reminder | Weekly       |           |
+      | task weekly 1      | Task     | Weekly       |           |
+      | meeting monthly 1  | Meeting  | Monthly      |           |
+      | reminder monthly 1 | Reminder | Monthly      |           |
+      | task monthly 1     | Task     | Monthly      |           |
 
   Scenario Outline: Post for event's schedule type is Daily
     When Create daily event "<title>","<type>","<scheduleType>"

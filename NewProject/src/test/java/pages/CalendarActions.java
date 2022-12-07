@@ -30,7 +30,7 @@ public class CalendarActions{
 
 
     @Step("Create new event: schedule type is Once or Weekly or Monthly")
-    public void createEvent(String title, String type, String scheduleType) {
+    public void createEvent(String title, String type, String scheduleType,String description) {
         List<Long> valueArray = new ArrayList<>();
         if(scheduleType.equals("Once")) {
             valueArray.add(CurrentTimestampValue);
@@ -50,21 +50,22 @@ public class CalendarActions{
         Map<String,Object> requestBody = new HashMap<>();
         requestBody.put("title",title);
         requestBody.put("type",type);
+        requestBody.put("description",description);
         requestBody.put("schedule",schedule);
 
-        SerenityRest.given()
+        Response res = SerenityRest.given()
                 .header("Content-Type","application/json")
                 .auth().oauth2(token)
                 .when()
                 .body(requestBody)
-                .post("https://api.gapowork.vn/calendar/v1.0/events")
-                .then().extract().response().prettyPrint();
+                .post("https://api.gapowork.vn/calendar/v1.0/events");
 //                .then().assertThat().body("data.title",equalTo(title));
-    }
-
-    @Step("Verify title")
-    public void checkTitle(String title, String type, String scheduleType) {
-
+        res.then().assertThat().body("data.title",equalTo(title));
+        res.then().assertThat().body("data.description",equalTo(description));
+        res.then().assertThat().body("data.schedule.start_hour",equalTo(currentHour));
+        res.then().assertThat().body("data.schedule.start_minute",equalTo(currentMintute));
+        res.then().assertThat().body("data.schedule.end_hour",equalTo(endHour));
+        res.then().assertThat().body("data.schedule.end_minute",equalTo(endMinute));
     }
 
     @Step("Create new event: schedule type is Daily")
