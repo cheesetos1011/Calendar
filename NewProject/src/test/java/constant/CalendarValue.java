@@ -16,6 +16,7 @@ public interface CalendarValue {
     int currentHour = LocalDateTime.now().getHour();
     int currentMintute = LocalDateTime.now().getMinute();
 
+    // Current time + 30 minutes
     LocalDateTime LaterTime = LocalDateTime.now().plusMinutes(30);
     int endHour = LaterTime.getHour();
     int endMinute = LaterTime.getMinute();

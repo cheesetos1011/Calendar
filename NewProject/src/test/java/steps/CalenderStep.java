@@ -94,5 +94,4 @@ public class CalenderStep {
     public void checkResponseCodeWhenDeleteEvent() {
         restAssuredThat(response -> response.statusCode(200));
     }
-
 }

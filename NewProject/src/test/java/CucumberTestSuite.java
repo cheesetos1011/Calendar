@@ -7,5 +7,5 @@ import org.junit.runner.RunWith;
         plugin = {"pretty"},
         features = "classpath:features"
 )
-public class hi {
+public class CucumberTestSuite {
 }

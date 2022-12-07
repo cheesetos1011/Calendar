@@ -1,14 +1,17 @@
 package pages;
 
 import io.restassured.http.ContentType;
+import io.restassured.response.Response;
 import model.Calendar.Option;
 import model.Calendar.ScheduleObject;
 import net.serenitybdd.rest.SerenityRest;
 import net.thucydides.core.annotations.Step;
+import org.hamcrest.Matchers;
 
 import java.util.*;
 
 import static constant.CalendarValue.*;
+import static org.hamcrest.Matchers.equalTo;
 import static pages.LoginActions.token;
 
 public class CalendarActions{
@@ -56,6 +59,12 @@ public class CalendarActions{
                 .body(requestBody)
                 .post("https://api.gapowork.vn/calendar/v1.0/events")
                 .then().extract().response().prettyPrint();
+//                .then().assertThat().body("data.title",equalTo(title));
+    }
+
+    @Step("Verify title")
+    public void checkTitle(String title, String type, String scheduleType) {
+
     }
 
     @Step("Create new event: schedule type is Daily")

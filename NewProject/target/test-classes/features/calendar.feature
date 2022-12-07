@@ -11,7 +11,6 @@ Feature: Check api calendar
   Scenario Outline: Post for event's schedule type is Once or Weekly or Monthly
     When Create event "<title>","<type>","<scheduleType>"
     Then Check response code when create Once, Weekly, Monthly event
-    Then check title of event
     Examples: Set schedule
       | title              | type     | scheduleType |
       | Meeting once 1     | Meeting  | Once         |
