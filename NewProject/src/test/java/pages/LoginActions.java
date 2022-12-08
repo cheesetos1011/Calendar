@@ -11,6 +11,7 @@ import java.util.Map;
 
 public class LoginActions {
     public static String token;
+    public static int userId;
 
     @Step("Check email if exist")
     public String checkEmail(String email) {
@@ -47,5 +48,7 @@ public class LoginActions {
                     .body(requestBodyLogin)
                     .post("https://api.gapowork.vn/auth/v3.0/login");
         token = res.path("data.access_token");
+        userId = res.path("data.user_id");
     }
+
 }

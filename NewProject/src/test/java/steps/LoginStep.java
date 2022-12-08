@@ -25,5 +25,4 @@ public class LoginStep {
     public void checkStatusCode() {
         restAssuredThat(response -> response.statusCode(200));
     }
-
 }

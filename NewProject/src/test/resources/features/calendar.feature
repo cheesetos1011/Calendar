@@ -48,6 +48,7 @@ Feature: Check api calendar
       | title                       | type    | scheduleType | attendees_id | to_department_ids                | to_role_ids                      | to_thread_ids |
       | Event nay co nguoi tham gia | Meeting | Daily        | 1560603946   | 32a0030baf9c41c68940eee2e59639c3 | 173f8cc0d8d349458a98e344fcf09722 | 1659606654118 |
 
+#    room_id, has_meeting, remind_before, is_all_day
   Scenario Outline: Edit
     When Edit event to "<title>","<scheduleType>","<value>","<start_hour>","<start_minute>","<end_hour>","<end_minute>","<identities>","<method>"
     Then Check response code when edit event
