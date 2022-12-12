@@ -11,14 +11,15 @@ import static pages.LoginActions.token;
 import static pages.LoginActions.userId;
 
 public class WorkspaceActions {
-    public static long wpId;
+    public static String wpId;
     @Step("Get workspace's id")
     public void getWpID() {
         Response res = SerenityRest.given()
                 .header("x-gapo-user-id",userId)
                 .auth().oauth2(token)
                 .when().get("https://api.gapowork.vn/workspace/v1.0/users/me");
-        List<Long> ListwpId = res.path("data.user_workspace.id");
+        List<String> ListwpId = res.path("data.user_workspace.id");
+        wpId = ListwpId.get(0);
     }
 
     @Step("get list active member")
@@ -28,6 +29,6 @@ public class WorkspaceActions {
                 .auth().oauth2(token)
                 .queryParam("state",1)
                 .when().get("https://api.gapowork.vn/workspace/v1.0/users");
-
+        List<Long> listActiveMem = res.path("data.user.id");
     }
 }

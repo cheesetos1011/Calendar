@@ -27,28 +27,22 @@ public class CalenderStep {
     }
 
     // Create event has schedule is Once/ Weekly/ Monthly
-    @When("Create event {string},{string},{string},{string}")
-    public void createEvent(String title, String type, String scheduleType, String description) {
-        calendarActions.createEvent(title, type, scheduleType, description);
+    @When("Create event {string},{string},{string},{string},{string}")
+    public void createEvent(String title, String type, String scheduleType, String description, String remindBefore) {
+        calendarActions.createEvent(title, type, scheduleType, description, remindBefore);
     }
-    @Then("Check response code when create Once, Weekly, Monthly event")
-    public void checkResponseCodeWhenCreateEventOnce() {
+
+    @Then("Check response code and Verify title, start, end time, description, remind time")
+    public void checkResponseCodeAndVerifyTitleStartEndTimeDescriptionRemindTime() {
         restAssuredThat(response -> response.statusCode(201));
     }
-//    @Then("Verify title")
-//    public void checkTitle(String title, String type, String scheduleType){
-//        calendarActions.checkTitle(title,type,scheduleType);
-//    }
-//    @Then("Check start time and end time {string},{string},{string}")
-//    public void checkStartTimeAndEndTime(String title, String type, String scheduleType) {
-//        calendarActions.checkEventHasTime(title, type, scheduleType);
-//    }
 
     // Create event has schedule is Daily
     @When("Create daily event {string},{string},{string}")
     public void createDailyEvent(String title, String type, String scheduleType) {
         calendarActions.createDailyEvent(title,type,scheduleType);
     }
+
     @Then("Check response code when create daily event")
     public void checkResponseCodeWhenCreateDailyEvent() {
         restAssuredThat(response -> response.statusCode(201));
@@ -57,26 +51,37 @@ public class CalenderStep {
     // Create recurrence event
     @When("Create recurrence event {string},{string},{string}")
     public void createRecurrenceEvent(String title, String type, String recurrence) {
-        calendarActions.createRecurrenceEvent(title,type,recurrence);
+        calendarActions.createRecurrenceEvent(title, type, recurrence);
     }
+
     @Then("Check response code when create recurrence event")
     public void checkResponseCodeWhenCreateRecurrenceEvent() {
         restAssuredThat(response -> response.statusCode(201));
     }
 
     //Create event add attendees, department, role and thread
-    @When("Create event with {string},{string},{string},{string},{string},{string},{string}")
-    public void createEventWith(String title, String type, String scheduleType, String attendees_id,
-                                String to_department_ids, String to_role_ids, String to_thread_ids) {
-        calendarActions.createAtteendeesEvent(title,type,scheduleType,attendees_id,to_department_ids,
-                to_role_ids,to_thread_ids);
+//    @When("Create event with {string},{string},{string},{string},{string},{string},{string}")
+//    public void createEventWith(String title, String type, String scheduleType, String attendees_id,
+//                                String to_department_ids, String to_role_ids, String to_thread_ids) {
+//        calendarActions.createAtteendeesEvent(title, type, scheduleType, attendees_id, to_department_ids,
+//                to_role_ids, to_thread_ids);
+//    }
+//
+//    @Then("Check response code when event has attendees")
+//    public void checkResponseCodeWhenEventHasAttendees() {
+//        restAssuredThat(response -> response.statusCode(201));
+//    }
+
+    // Event has room
+    @When("create room event {string},{string},{string}")
+    public void createRoomEvent(String type, String scheduleType, String hasMeeting) {
+        calendarActions.roomEvent(type, scheduleType, hasMeeting);
     }
 
-    @Then("Check response code when event has attendees")
-    public void checkResponseCodeWhenEventHasAttendees() {
+    @Then("check response code and verify room_id, has_meeting")
+    public void checkResponseCodeAndVerifyRoom_idHas_meeting() {
         restAssuredThat(response -> response.statusCode(201));
     }
-
 
     //Edit event
     @When("Edit event to {string},{string},{string},{string},{string},{string},{string},{string},{string}")
@@ -102,4 +107,5 @@ public class CalenderStep {
     public void checkResponseCodeWhenDeleteEvent() {
         restAssuredThat(response -> response.statusCode(200));
     }
+
 }

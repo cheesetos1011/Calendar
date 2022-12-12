@@ -13,6 +13,8 @@ import java.util.*;
 import static constant.CalendarValue.*;
 import static org.hamcrest.Matchers.equalTo;
 import static pages.LoginActions.token;
+import static pages.RoomActions.roomId;
+import static pages.WorkspaceActions.wpId;
 
 public class CalendarActions{
 
@@ -30,7 +32,7 @@ public class CalendarActions{
 
 
     @Step("Create new event: schedule type is Once or Weekly or Monthly")
-    public void createEvent(String title, String type, String scheduleType,String description) {
+    public void createEvent(String title, String type, String scheduleType,String description, String remindBefore) {
         List<Long> valueArray = new ArrayList<>();
         if(scheduleType.equals("Once")) {
             valueArray.add(CurrentTimestampValue);
@@ -39,9 +41,13 @@ public class CalendarActions{
         } else
             valueArray.add(monthlyValue);
 
+        List<Integer> remind_before = new ArrayList<>();
+        remind_before.add(Integer.parseInt(remindBefore));
+
         ScheduleObject schedule = new ScheduleObject();
         schedule.setType(scheduleType);
         schedule.setValue(valueArray);
+        schedule.setRemind_before(remind_before);
         schedule.setStart_hour(currentHour);
         schedule.setStart_minute(currentMintute);
         schedule.setEnd_hour(endHour);
@@ -66,29 +72,37 @@ public class CalendarActions{
         res.then().assertThat().body("data.schedule.start_minute",equalTo(currentMintute));
         res.then().assertThat().body("data.schedule.end_hour",equalTo(endHour));
         res.then().assertThat().body("data.schedule.end_minute",equalTo(endMinute));
+        res.then().assertThat().body("data.schedule.remind_before",equalTo(remind_before));
     }
 
     @Step("Create new event: schedule type is Daily")
     public void createDailyEvent(String title, String type, String scheduleType) {
+        boolean isAllDay;
         ScheduleObject schedule = new ScheduleObject();
         schedule.setType(scheduleType);
         schedule.setStart_hour(currentHour);
         schedule.setStart_minute(currentMintute);
         schedule.setEnd_hour(endHour);
         schedule.setEnd_minute(endMinute);
+        if(type.equals("Reminder")){
+            isAllDay = false;
+        }
+        else isAllDay = true;
+        schedule.setIs_all_day(isAllDay);
 
         Map<String,Object> requestBody = new HashMap<>();
         requestBody.put("title",title);
         requestBody.put("type",type);
         requestBody.put("schedule",schedule);
 
-        SerenityRest.given()
+        Response res = SerenityRest.given()
                 .header("Content-Type","application/json")
                 .auth().oauth2(token)
                 .when()
                 .body(requestBody)
-                .post("https://api.gapowork.vn/calendar/v1.0/events")
-                .then().extract().response().prettyPrint();
+                .post("https://api.gapowork.vn/calendar/v1.0/events");
+
+        res.then().assertThat().body("data.schedule.is_all_day",equalTo(isAllDay));
     }
 
     @Step("Create new event: Recurrence event")
@@ -115,39 +129,75 @@ public class CalendarActions{
                 .then().extract().response().prettyPrint();
     }
 
-    @Step("Create new event: has attendees from department/ thread/ role")
-    public void createAtteendeesEvent(String title, String type, String scheduleType, String attendees_id,
-                                      String to_department_ids, String to_role_ids, String to_thread_ids){
+    @Step("Create room event")
+    public void roomEvent(String type, String scheduleType,String hasMeeting) {
+        List<Long> valueArray = new ArrayList<>();
+        if(scheduleType.equals("Once")) {
+            valueArray.add(CurrentTimestampValue);
+        } else if(scheduleType.equals("Weekly")) {
+            valueArray.add(weeklyValue);
+        } else
+            valueArray.add(monthlyValue);
+
         ScheduleObject schedule = new ScheduleObject();
         schedule.setType(scheduleType);
-        List<Integer> attendees = new ArrayList<>();
-        attendees.add(Integer.parseInt(attendees_id));
-        List<String> department = new ArrayList<>();
-        department.add(to_department_ids);
-        List<String> role = new ArrayList<>();
-        role.add(to_role_ids);
-        List<String> thread = new ArrayList<>();
-        thread.add(to_thread_ids);
+        schedule.setValue(valueArray);
+        schedule.setStart_hour(currentHour);
+        schedule.setStart_minute(currentMintute);
+        schedule.setEnd_hour(endHour);
+        schedule.setEnd_minute(endMinute);
 
         Map<String,Object> requestBody = new HashMap<>();
-        requestBody.put("title",title);
+        requestBody.put("room_id",roomId);
         requestBody.put("type",type);
+        requestBody.put("has_meeting",Boolean.parseBoolean(hasMeeting));
         requestBody.put("schedule",schedule);
-        requestBody.put("attendees_id",attendees);
-        requestBody.put("to_department_ids",department);
-        requestBody.put("to_role_ids",role);
-        requestBody.put("to_thread_ids",thread);
 
-        SerenityRest.given()
+        Response res = SerenityRest.given()
                 .header("Content-Type","application/json")
-                .header("x-gapo-workspace-id","582669755189245")
+                .header("x-gapo-workspace-id",wpId)
                 .auth().oauth2(token)
                 .when()
                 .body(requestBody)
-                .post("https://api.gapowork.vn/calendar/v1.0/events")
-                .then().extract().response().prettyPrint();
-
+                .post("https://api.gapowork.vn/calendar/v1.0/events");
+        res.then().extract().response().prettyPrint();
+        res.then().assertThat().body("data.room_id",equalTo(roomId));
+        res.then().assertThat().body("data.has_meeting",equalTo(Boolean.parseBoolean(hasMeeting)));
     }
+
+//    @Step("Create new event: has attendees from department/ thread/ role")
+//    public void createAtteendeesEvent(String title, String type, String scheduleType, String attendees_id,
+//                                      String to_department_ids, String to_role_ids, String to_thread_ids){
+//        ScheduleObject schedule = new ScheduleObject();
+//        schedule.setType(scheduleType);
+//        List<Integer> attendees = new ArrayList<>();
+//        attendees.add(Integer.parseInt(attendees_id));
+//        List<String> department = new ArrayList<>();
+//        department.add(to_department_ids);
+//        List<String> role = new ArrayList<>();
+//        role.add(to_role_ids);
+//        List<String> thread = new ArrayList<>();
+//        thread.add(to_thread_ids);
+//
+//        Map<String,Object> requestBody = new HashMap<>();
+//        requestBody.put("title",title);
+//        requestBody.put("type",type);
+//        requestBody.put("schedule",schedule);
+//        requestBody.put("attendees_id",attendees);
+//        requestBody.put("to_department_ids",department);
+//        requestBody.put("to_role_ids",role);
+//        requestBody.put("to_thread_ids",thread);
+//
+//        SerenityRest.given()
+//                .header("Content-Type","application/json")
+//                .header("x-gapo-workspace-id","582669755189245")
+//                .auth().oauth2(token)
+//                .when()
+//                .body(requestBody)
+//                .post("https://api.gapowork.vn/calendar/v1.0/events")
+//                .then().extract().response().prettyPrint();
+//
+//    }
 
     @Step("Edit event")
     public void editEvent(String title, String scheduleType, String value, String start_hour, String start_minute,
